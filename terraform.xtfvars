@@ -1,0 +1,6 @@
+prefix="MG"
+region="us-west-1"
+vpc_cidr="10.10.0.0/16"
+subnet_web_cidr="10.10.0.0/24"
+env="Test"
+owner="Finance"
