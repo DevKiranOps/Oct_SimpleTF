@@ -1,0 +1,8 @@
+# Rename this file as Terraform.tfvars and replace your own values
+
+prefix="ad;sdafjkl"
+region="afouhsdkl"
+vpc_cidr="10.10.0.0/16"
+subnet_web_cidr="10.10.0.0/24"
+env="Test"
+owner="DF"
