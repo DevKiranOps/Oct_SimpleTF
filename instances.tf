@@ -1,3 +1,23 @@
+
+data "template_file" "webdata" {
+  template =file("${path.module}/Templates/installApache.tpl")
+}
+
+
+
+data "aws_ami" "mywebimage" {
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["xyzwebimage"]
+  }
+
+  
+  owners = ["119077514921"] # KiranOps
+}
+
+
+
 data "aws_ami" "ubuntu" {
   most_recent = true
   filter {
@@ -14,35 +34,39 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_network_interface" "web" {
-  subnet_id   = aws_subnet.xyz.id
+  count = var.instance_count 
+  subnet_id   = element(aws_subnet.web.*.id, count.index)
   security_groups = [aws_security_group.web.id]
   
   tags = {
-    Name = "web_nic"
+    Name = "web_nic-${count.index}"
   }
 }
 
 
 resource "aws_instance" "web" {
-  ami           = data.aws_ami.ubuntu.id
+  count  =  var.instance_count
+  ami           = data.aws_ami.mywebimage.id
   instance_type = var.web_instance_size
   
   network_interface {
-    network_interface_id = aws_network_interface.web.id
+    network_interface_id = element(aws_network_interface.web.*.id, count.index)
     device_index         = 0
   }
 
   credit_specification {
     cpu_credits = "unlimited"
   }
+  key_name=var.keypair
+
 
 
   tags = {
-    Name = "${var.prefix}-${var.env}-web"
-    owner = var.owner
+    Name = "${var.prefix}-${var.env}-web-${count.index}"
     Environment = var.env
 
   }
+  depends_on = [aws_route_table_association.web]
 }
 
 
