@@ -13,12 +13,11 @@ resource "aws_lb_target_group" "test" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "test" {
-  count  =  var.instance_count
-  target_group_arn = aws_lb_target_group.test.arn
-  target_id        = element(aws_instance.web.*.id, count.index)
-  port             = 80
-}
+// resource "aws_lb_target_group_attachment" "test" {
+//   count  =  var.instance_count
+//   target_group_arn = aws_lb_target_group.test.arn
+//   port             = 80
+// }
 
 
 resource "aws_lb_listener" "front_end" {
